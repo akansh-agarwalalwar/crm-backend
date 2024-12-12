@@ -59,7 +59,6 @@ exports.createWebhook = function (req, res) {
   console.log(messageBody)
   const phoneNumberId =
     messageBody?.entry?.[0]?.changes?.[0]?.value?.metadata?.phone_number_id;
-  // Example of extracting the sender's number
   const senderNumber =
     messageBody?.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.from;
   const messageText =
@@ -69,47 +68,11 @@ exports.createWebhook = function (req, res) {
     console.log(`Message received from: ${senderNumber}`);
     console.log(`Message Body: ${messageText}`);
 
-    // Save the sender's phone number and phone number ID to the database
     saveSenderNumber(senderNumber, phoneNumberId);
 
-    // Emit data to frontend using Socket.IO
     io.emit("apiData", { senderNumber, messageText });
   }
-
-  // Commented out the auto-response part
-  // const payload = {
-  //   messaging_product: "whatsapp",
-  //   recipient_type: "individual",
-  //   to: senderNumber,
-  //   type: "text",
-  //   text: {
-  //     preview_url: false,
-  //     body: `Hello, we received your message!`,
-  //   },
-  // };
-
-  // const headers = {
-  //   "Content-Type": "application/json",
-  //   Authorization: `Bearer ${token}`,
-  // };
-
-  // axios
-  //   .post(
-  //     `https://graph.facebook.com/v21.0/${phoneNumberId}/messages`,
-  //     payload,
-  //     { headers }
-  //   )
-  //   .then((response) => {
-  //     console.log("Auto-response sent successfully:", response?.data);
-  //   })
-  //   .catch((error) => {
-  //     console.error(
-  //       "Error sending auto-response:",
-  //       error?.response?.data || error.message
-  //     );
-  //   });
-
-  res.sendStatus(200); // Respond to acknowledge receipt of the webhook
+  res.sendStatus(200);
 };
 
 exports.getChats = async (req, res) => {

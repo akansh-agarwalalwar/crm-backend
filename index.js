@@ -73,7 +73,7 @@ async function ensureTableExists() {
         empId VARCHAR(255) NOT NULL,
         leadMessage VARCHAR(15),
         empMessage VARCHAR(255),
-        type ENUM("text","image","video","pdf") NOT NULL,
+        type ENUM("text","image","video","pdf","template") NOT NULL,
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `;
@@ -107,10 +107,7 @@ app.post("/webhook2", function (req, res) {
   console.log("Message Body:", messageBody);
   console.log("Message Type:", messageType);
   console.log("PhoneNumber Id:", phoneNumberId);
-  //socket code
   io.emit("apiData", messageBody);
-  //socket code
-
   // Define the payload
   const payload = {
     messaging_product: "whatsapp",
