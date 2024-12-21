@@ -7,6 +7,7 @@ const con = mysql.createPool({
     database: process.env.MYSQL_DB,
     port: process.env.MYSQL_PORT,
     connectionLimit: 1000,
+    timezone: 'local'
     // debug: ['ComQueryPacket']
   });
 

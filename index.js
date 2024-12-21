@@ -14,6 +14,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Auth = require("./routes/AuthRoute");
 const Admin = require("./routes/Admin/Employee");
+const Employee = require("./routes/Employee/EmployeeAuth");
 require("dotenv").config();
 const PORT = 4000;
 const con = require("./config/connection");
@@ -53,15 +54,16 @@ app.use(bodyParser.json());
 const io = socketIo(server);
 
 io.on("connection", (socket) => {
-  console.log("A user connected");
-
-  socket.on("message", (data) => {
-    console.log("Message received", data);
-    io.emit("message", data);
+  socket.on("joinRoom", (room) => {
+    socket.join(room);
   });
 
-  socket.on("disconnect", () => {
-    console.log("A user disconnected");
+  socket.on("leaveRoom", (room) => {
+    socket.leave(room);
+  });
+
+  socket.on("sendMessage", (message) => {
+    io.to(message.to).emit("newMessage", message);
   });
 });
 
@@ -78,6 +80,17 @@ async function ensureTableExists() {
       );
     `;
     await con.execute(createWhatsAppChat);
+    const createWhatsApp = `
+      CREATE TABLE IF NOT EXISTS message (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        senderNumber VARCHAR(255) NOT NULL,
+        phoneNumberId VARCHAR(15),
+        messageText VARCHAR(255),
+        type ENUM("text","image","video","pdf","template"),
+        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+    await con.execute(createWhatsApp);
   } catch (error) {
     console.error(error);
     console.log("Failed to ensure table exists");
@@ -91,6 +104,8 @@ app.use("/api/whatsapp", WhatsappMessage);
 app.use("/api/auth", Auth);
 
 app.use("/api/admin", Admin);
+
+app.use("/api/employee", Employee);
 
 app.post("/webhook2", function (req, res) {
   const waId = req.body.entry[0].changes[0].value.contacts[0].wa_id;

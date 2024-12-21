@@ -10,7 +10,10 @@ const EmployeeSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  empID:{
+  password: {
+    type: String,
+  },
+  empID: {
     type: String,
     required: true,
     unique: true,
@@ -49,9 +52,17 @@ const EmployeeSchema = new mongoose.Schema({
   idCard: [
     {
       type: String,
-    //   required: true,
+      //   required: true,
     },
   ],
+  otp: { type: String },
+  resetOTP: {
+    type: String,
+  },
+  resetOTPExpires: {
+    type: Date,
+  },
+
 });
 
 module.exports = mongoose.model("Employee", EmployeeSchema);

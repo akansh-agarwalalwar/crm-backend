@@ -6,10 +6,12 @@ router.post("/request-password-reset", AuthController.requestPasswordReset);
 
 router.post("/verify-otp", AuthController.verifyOTP);
 
-// router.put("/reset-password", AuthController.resetPassword);
+router.put("/reset-password", AuthController.resetPassword);
 
-// router.post("/send-otp", AuthController.sendOtp);
+router.post("/emp-otp", AuthController.EmployeeOTP);
 
-// router.post("/sendOtp", AuthController.sendOtpAdmin);
+router.post("/verify-emp-otp", AuthController.verifyEmployeeOTP);
+
+router.put("/reset-emp-password", AuthController.resetPasswordEmployee);
 
 module.exports = router;
